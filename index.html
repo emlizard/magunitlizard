@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Magnetic Unit Conversion</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 500px; margin: 50px auto; line-height: 1.5; }
+    .row { margin-bottom: 12px; }
+    label { display: inline-block; width: 80px; }
+    input, select, button { padding: 6px; font-size: 1rem; }
+    #result { margin-top: 20px; font-weight: bold; }
+    #formulas { margin-top: 30px; border-top: 1px solid #ccc; padding-top: 20px; }
+    #formulas p { margin: 6px 0; }
+  </style>
+  <!-- MathJax 로드 -->
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+
+  <h2>Magnetic Unit Conversion</h2>
+
+  <div class="row">
+    <label for="value">Value:</label>
+    <input type="number" id="value" value="1" step="any"/>
+  </div>
+
+  <div class="row">
+    <label for="from">From:</label>
+    <select id="from">
+      <option value="T">Tesla (T)</option>
+      <option value="G">Gauss (G)</option>
+      <option value="Wb/m2">Weber/m²</option>
+      <option value="A/m">Ampere/m (A/m)</option>
+      <option value="Oe">Oersted (Oe)</option>
+    </select>
+  </div>
+
+  <div class="row">
+    <label for="to">To:</label>
+    <select id="to">
+      <option value="T">Tesla (T)</option>
+      <option value="G">Gauss (G)</option>
+      <option value="Wb/m2">Weber/m²</option>
+      <option value="A/m">Ampere/m (A/m)</option>
+      <option value="Oe">Oersted (Oe)</option>
+    </select>
+  </div>
+
+  <button onclick="convert()">Conversion</button>
+  <div id="result"></div>
+
+  <div id="formulas">
+    <p><strong>Calculation Formulars:</strong></p>
+    <p>$$\displaystyle \mu_0 = 4\pi \times 10^{-7}\,\mathrm{H/m}$$</p>
+    <p>$$\displaystyle H(\mathrm{A/m}) = \frac{B(\mathrm{T})}{\mu_0},\quad B(\mathrm{T}) = \mu_0\,H(\mathrm{A/m})$$</p>
+    <p>$$\displaystyle 1\,\mathrm{T} = 10^4\,\mathrm{G}$$</p>
+    <p>$$\displaystyle H(\mathrm{Oe}) = H(\mathrm{A/m})\times\frac{4\pi}{10^3},\quad 
+      H(\mathrm{A/m}) = H(\mathrm{Oe})\times\frac{10^3}{4\pi}$$</p>
+  </div>
+
+  <script>
+    const mu0 = 4 * Math.PI * 1e-7; // H/m
+    const T_to_G = 1e4;             // 1 T = 10^4 G
+
+    function convert() {
+      const val  = parseFloat(document.getElementById('value').value);
+      const from = document.getElementById('from').value;
+      const to   = document.getElementById('to').value;
+
+      let inTesla, inApm;
+
+      // 입력 단위를 Tesla/A/m 기준으로 변환
+      switch(from) {
+        case 'T':
+          inTesla = val;
+          inApm   = val / mu0;
+          break;
+        case 'G':
+          inTesla = val * 1e-4;
+          inApm   = inTesla / mu0;
+          break;
+        case 'Wb/m2':
+          inTesla = val;
+          inApm   = val / mu0;
+          break;
+        case 'A/m':
+          inApm   = val;
+          inTesla = mu0 * val;
+          break;
+        case 'Oe':
+          inApm   = val * (1000 / (4 * Math.PI));
+          inTesla = mu0 * inApm;
+          break;
+      }
+
+      // 목표 단위로 변환
+      let result;
+      switch(to) {
+        case 'T':
+          result = inTesla;
+          break;
+        case 'G':
+          result = inTesla * T_to_G;
+          break;
+        case 'Wb/m2':
+          result = inTesla;
+          break;
+        case 'A/m':
+          result = inApm;
+          break;
+        case 'Oe':
+          result = inApm * (4 * Math.PI / 1000);
+          break;
+      }
+
+      document.getElementById('result').innerText =
+        `${val} ${from} = ${result.toFixed(3)} ${to}`;
+    }
+  </script>
+
+</body>
+</html>
