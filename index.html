@@ -1,33 +1,80 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" data-theme="light">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Magnetic Unit Conversion</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+      },
+      svg: {
+        fontCache: 'global'
+      }
+    };
+  </script>
+  <script type="text/javascript" id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+  </script>
   <style>
-    body { font-family: Arial, sans-serif; max-width: 500px; margin: 50px auto; line-height: 1.5; }
-    .row { margin-bottom: 12px; }
-    label { display: inline-block; width: 80px; }
-    input, select, button { padding: 6px; font-size: 1rem; }
-    #result { margin-top: 20px; font-weight: bold; }
-    #formulas { margin-top: 30px; border-top: 1px solid #ccc; padding-top: 20px; }
-    #formulas p { margin: 6px 0; }
-  </style>
-  <!-- MathJax 로드 -->
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+:root {
+  --primary:#2563eb;--primary-dark:#1d4ed8;--accent:#06b6d4;--accent-dark:#0891b2;--success:#10b981;--warning:#f59e0b;--error:#ef4444;
+  --bg-light:#ffffff;--bg-dark:#0f172a;--surface-light:#f8fafc;--surface-dark:#1e293b;--card-light:#ffffff;--card-dark:#334155;
+  --text-primary-light:#0f172a;--text-primary-dark:#f1f5f9;--text-secondary-light:#64748b;--text-secondary-dark:#94a3b8;
+  --border-light:#e2e8f0;--border-dark:#475569;--shadow-light:0 1px 3px 0 rgb(0 0 0 / .1),0 1px 2px -1px rgb(0 0 0 / .1);
+  --shadow-medium:0 4px 6px -1px rgb(0 0 0 / .1),0 2px 4px -2px rgb(0 0 0 / .1);--radius:12px;--radius-lg:16px;--transition:all .3s cubic-bezier(.4,0,.2,1)
+}
+[data-theme='light']{--bg:var(--bg-light);--surface:var(--surface-light);--card:var(--card-light);--text-primary:var(--text-primary-light);--text-secondary:var(--text-secondary-light);--border:var(--border-light);--shadow:var(--shadow-light)}
+[data-theme='dark']{--bg:var(--bg-dark);--surface:var(--surface-dark);--card:var(--card-dark);--text-primary:var(--text-primary-dark);--text-secondary:var(--text-secondary-dark);--border:var(--border-dark);--shadow:var(--shadow-medium)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text-primary);line-height:1.65}
+body::before{content:'';position:fixed;inset:0;background:linear-gradient(45deg,rgba(37,99,235,.03),rgba(6,182,212,.03),rgba(16,185,129,.03));z-index:-1;animation:grad 8s ease-in-out infinite}
+@keyframes grad{0%,100%{transform:translateX(0) rotate(0)}50%{transform:translateX(5%) rotate(1deg)}}
+.header{position:sticky;top:0;z-index:10;background:rgba(255,255,255,.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);box-shadow:var(--shadow)}
+[data-theme="dark"] .header{background:rgba(15,23,42,.95)}
+.header-content{max-width:1200px;margin:0 auto;padding:1rem 2rem;display:flex;gap:1rem;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.page-title{font-weight:800;font-size:1.25rem;background:linear-gradient(135deg,var(--primary),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.theme-toggle{background:transparent;border:2px solid var(--border);color:var(--text-secondary);padding:.5rem;border-radius:var(--radius);cursor:pointer;transition:var(--transition)}
+.theme-toggle:hover{border-color:var(--primary);color:var(--primary)}
+.container{max-width:800px;margin:2rem auto;padding:1.5rem;display:flex;flex-direction:column;gap:1.5rem;}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow);padding:1.5rem;position:relative;overflow:hidden}
+.input-group{display:flex;flex-direction:column;gap:.5rem;margin-bottom:1.25rem}
+.input-group label{font-weight:500;color:var(--text-secondary)}
+.input-field{width:100%;padding:.75rem 1rem;border:2px solid var(--border);border-radius:var(--radius);background:var(--surface);color:var(--text-primary);transition:var(--transition)}
+.input-field:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(37,99,235,.1)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;padding:.75rem 1.25rem;background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;border:none;border-radius:var(--radius);font-weight:600;cursor:pointer;transition:var(--transition);text-decoration:none}
+.btn:hover{transform:translateY(-2px);box-shadow:var(--shadow-medium)}
+.result-area{margin-top:1.5rem;padding:1rem;background:var(--surface);border-radius:var(--radius);border-left:4px solid var(--primary);min-height:2.5rem;animation:fadeIn .5s}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.updated{color:var(--primary);animation:resultUpdate .5s ease-out}
+@keyframes resultUpdate{0%{background:rgba(37,99,235,.2);transform:scale(1.02)}100%{background:transparent;transform:scale(1)}}
+h1,h2,h3{font-weight:700;line-height:1.3;margin-bottom:1rem}</style>
 </head>
 <body>
+  <header class="header">
+    <div class="header-content">
+      <div class="page-title"><i class="fa-solid fa-calculator"></i> Magnetic Unit Conversion</div>
+      <button class="theme-toggle" onclick="toggleTheme()"><i class="fa-solid fa-circle-half-stroke"></i></button>
+    </div>
+  </header>
+  
+  <main class="container">
+    <div class="card">
 
   <h2>Magnetic Unit Conversion</h2>
 
   <div class="row">
-    <label for="value">Value:</label>
-    <input type="number" id="value" value="1" step="any"/>
+    <div class="input-group"><label for="value">Value:</label></div>
+    <input type="number" id="value" value="1" step="any" class="input-field">
   </div>
 
   <div class="row">
-    <label for="from">From:</label>
-    <select id="from">
+    <div class="input-group"><label for="from">From:</label></div>
+    <select id="from" class="input-field">
       <option value="T">Tesla (T)</option>
       <option value="G">Gauss (G)</option>
       <option value="Wb/m2">Weber/m²</option>
@@ -37,8 +84,8 @@
   </div>
 
   <div class="row">
-    <label for="to">To:</label>
-    <select id="to">
+    <div class="input-group"><label for="to">To:</label></div>
+    <select id="to" class="input-field">
       <option value="T">Tesla (T)</option>
       <option value="G">Gauss (G)</option>
       <option value="Wb/m2">Weber/m²</option>
@@ -47,7 +94,7 @@
     </select>
   </div>
 
-  <button onclick="convert()">Conversion</button>
+  <button onclick="convert()" class="btn">Conversion</button>
   <div id="result"></div>
 
   <div id="formulas">
@@ -59,7 +106,33 @@
       H(\mathrm{A/m}) = H(\mathrm{Oe})\times\frac{10^3}{4\pi}$$</p>
   </div>
 
+  
+
+
+</div>
+  </main>
+
   <script>
+
+function toggleTheme() {
+  const root = document.documentElement;
+  const current = root.getAttribute('data-theme');
+  const next = current === 'dark' ? 'light' : 'dark';
+  root.setAttribute('data-theme', next);
+  localStorage.setItem('theme', next);
+}
+const savedTheme = localStorage.getItem('theme') || 'light';
+document.documentElement.setAttribute('data-theme', savedTheme);
+window.__updateResult = (selector, value) => {
+  const el = document.querySelector(selector);
+  if (!el) return;
+  el.textContent = String(value);
+  el.classList.add('updated');
+  setTimeout(() => el.classList.remove('updated'), 600);
+};
+
+
+
     const mu0 = 4 * Math.PI * 1e-7; // H/m
     const T_to_G = 1e4;             // 1 T = 10^4 G
 
@@ -117,7 +190,7 @@
       document.getElementById('result').innerText =
         `${val} ${from} = ${result.toFixed(6)} ${to}`;
     }
+  
   </script>
-
 </body>
 </html>
