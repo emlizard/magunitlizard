@@ -166,7 +166,7 @@
       }
 
       // Display the result
-      resultEl.innerHTML = `<strong>${val.toLocaleString()}</strong> ${from} = <strong>${result.toExponential(4)}</strong> ${to}`;
+      resultEl.innerHTML = `<strong>${val.toLocaleString()}</strong> ${from} = <strong>${result.toFixed(4)}</strong> ${to}`;
       
       // Add a brief animation for feedback
       resultEl.classList.add('updated');
